@@ -1,11 +1,8 @@
-import {getFirestore} from "firebase-admin/firestore";
-import {error} from "firebase-functions/logger";
+import { getFirestore } from "firebase-admin/firestore";
+import { error } from "firebase-functions/logger";
 
 // TODO: 構造体で型チェックしたいけどこれ以前変えるのめんどいからとりあえずこのまま。
-export const addAffiliator = async (
-  lineId: string,
-  affiliatorId: string,
-) => {
+export const addAffiliator = async (lineId: string, affiliatorId: string) => {
   try {
     // 応募データ保存(ユーザー認証情報はクライアントで保持しない)
     // TODO: 余裕があれば
