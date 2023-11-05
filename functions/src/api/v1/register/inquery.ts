@@ -1,19 +1,18 @@
-import {Response} from "express";
-import {error, info} from "firebase-functions/logger";
-import {onRequest, Request} from "firebase-functions/v2/https";
-import {addJobSubbmitHistory} from "../lib/addJobSunbmit";
-import {getLineId} from "../lib/lineId";
-import {getLineLoginIdToken} from "../lib/lineLoginIdToken";
-import {validateRequestQuery} from "../lib/validateRequestQuery";
-import {verifyCSRFToken} from "../lib/verifyCSRFToken";
-import {LineId, LineIdToken, RequestQuery} from "../attribute/types";
+import { Response } from "express";
+import { error, info } from "firebase-functions/logger";
+import { onRequest, Request } from "firebase-functions/v2/https";
+import { addJobSubbmitHistory } from "../lib/addJobSunbmit";
+import { getLineId } from "../lib/lineId";
+import { getLineLoginIdToken } from "../lib/lineLoginIdToken";
+import { validateRequestQuery } from "../lib/validateRequestQuery";
+import { verifyCSRFToken } from "../lib/verifyCSRFToken";
+import { LineId, LineIdToken, RequestQuery } from "../attribute/types";
 import * as consts from "../attribute/consts";
 
 export const inquery = onRequest(
-  {region: "asia-northeast1", maxInstances: 10},
+  { region: "asia-northeast1", maxInstances: 10 },
   async (request: Request, response: Response) => {
     try {
-      // バリデーション
       const validateResult: RequestQuery | undefined = validateRequestQuery(
         request.query
       );
@@ -22,11 +21,9 @@ export const inquery = onRequest(
         return;
       }
       const validatedQuery = validateResult as RequestQuery;
-
-      // CSRFトークンの検証
       const isCSRFverify = await verifyCSRFToken(validatedQuery.state);
 
-      // ///////ローカル検証時コメントアウト
+      // !ローカル検証時コメントアウト
       if (!isCSRFverify) {
         // error(`CSRF検証エラーです。state:\n${validatedQuery.state}`);
         // return;
@@ -34,10 +31,10 @@ export const inquery = onRequest(
 
       // LINE IDトークン取得
       const redirectUri =
-        consts.JOB_SEEKER_LINE_CALLBACK_URI+
-        "?jobid="+
-        validatedQuery.jobid+
-        "&supporterid="+
+        consts.JOB_SEEKER_LINE_CALLBACK_URI +
+        "?jobid=" +
+        validatedQuery.jobid +
+        "&supporterid=" +
         validatedQuery.supporterid;
 
       const lineIdTokenResult: LineIdToken | undefined =
@@ -70,7 +67,7 @@ export const inquery = onRequest(
 
       // 応募データ保存(ユーザー認証情報はクライアントで保持しない)
       // TODO: 余裕があれば
-      addJobSubbmitHistory(
+      await addJobSubbmitHistory(
         lineId,
         validatedQuery.jobid,
         validatedQuery.supporterid
@@ -83,7 +80,7 @@ export const inquery = onRequest(
       response.redirect(`${consts.RESULT_REDIRECT_URL}?jr=true`);
     } catch (e) {
       error("全体エラー", e);
-      response.json({result: "エラー"});
+      response.json({ result: "エラー" });
     }
   }
 );

@@ -1,9 +1,15 @@
-import {affiliator} from "./affiliator";
-import {inquery} from "./inquery";
+import { affiliator } from "./affiliator";
+import { inquery } from "./inquery";
+import { job } from "./job";
+import { profile } from "./profile";
 
 export {
-  /* 問い合わせデータ登録 */
+  /* 問い合わせデータ */
   inquery,
-  /* アフィリエイター登録 */
+  /* アフィリエイター */
   affiliator,
+  /* 案件データ */
+  job,
+  /* プロフィール情報 */
+  profile,
 };
