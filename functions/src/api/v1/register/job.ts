@@ -98,7 +98,7 @@ export const job = onRequest(
   async (request: Request, response: Response) => {
     // const job = request.body as Job;
     await add();
-    response.json("test");
+    response.json("testtest");
   }
 );
 
