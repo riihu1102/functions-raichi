@@ -15,14 +15,12 @@ export const affiliator = onRequest(
   async (request: Request, response: Response) => {
     try {
       // バリデーション
-      const validateResult = validateAffiliatorQuery(
-        request.query
-      );
+      const validateResult = validateAffiliatorQuery(request.query);
       if (!validateResult) {
         error(`ユーザーからの入力値が不正です。\n入力値:\n${request.query}`);
         return;
       }
-      const validatedQuery = validateResult as {state: string, code: string};
+      const validatedQuery = validateResult as { state: string; code: string };
 
       // CSRFトークンの検証
       const isCSRFverify = await verifyCSRFToken(validatedQuery.state);
@@ -64,11 +62,9 @@ export const affiliator = onRequest(
       // TODO: 余裕があれば
       // アフィリエイターデータ保存(ユーザー認証情報はクライアントで保持しない)
       // アフィリエイトコードはlineidのsha256ハッシュ。漏洩モーマンタイ。
-      addAffiliator(lineId, encryptSha256(lineId));
+      await addAffiliator(lineId, encryptSha256(lineId));
 
-      info(
-        `アフィリエイター登録の受付を完了しました。${lineId}`
-      );
+      info(`アフィリエイター登録の受付を完了しました。${lineId}`);
 
       response.redirect(`${consts.RESULT_REDIRECT_URL}?ar=true`); // job result
     } catch (e) {

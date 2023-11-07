@@ -1,5 +1,5 @@
-import {getFirestore} from "firebase-admin/firestore";
-import {error} from "firebase-functions/logger";
+import { getFirestore } from "firebase-admin/firestore";
+import { error } from "firebase-functions/logger";
 
 /* [CSRF対策] トークンの検証 */
 export const verifyCSRFToken = async (state: string): Promise<boolean> => {

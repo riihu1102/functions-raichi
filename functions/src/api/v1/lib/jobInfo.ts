@@ -1,18 +1,13 @@
-import {getFirestore} from "firebase-admin/firestore";
-import {error} from "firebase-functions/logger";
+import { getFirestore } from "firebase-admin/firestore";
+import { error } from "firebase-functions/logger";
+import { Job } from "../register/job";
 
-export type JobInfo = {
-  lineCard: string
-}
-export const getJobData = async (jobId: string)
-    : Promise<JobInfo | undefined> => {
+export const getJobData = async (jobId: string): Promise<Job | undefined> => {
   const doc = await getFirestore().collection("jobs").doc(jobId).get();
   if (!doc.exists) {
     error("ジョブデータがありません");
-    return;
+    return undefined;
   }
-  const data = doc.data() as JobInfo;
-  return data;
+  const data = doc.data();
+  return data as Job;
 };
-
-
