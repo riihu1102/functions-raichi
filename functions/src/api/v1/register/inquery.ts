@@ -18,6 +18,11 @@ export const inquery = onRequest(
       );
       if (!validateResult) {
         error(`ユーザーからの入力値が不正です。\n入力値:\n${request.query}`);
+        error(JSON.stringify(request.query));
+        console.log(request.query.state);
+        console.log(request.query.code);
+        console.log(request.query.jobid);
+        console.log(request.query.affiliatorid);
         return;
       }
       const validatedQuery = validateResult as RequestQuery;
@@ -77,7 +82,7 @@ export const inquery = onRequest(
         `LINE応募の受付を完了しました。${lineId}, 
         ${validatedQuery.jobid} , ${validatedQuery.supporterid}`
       );
-      response.redirect(`${consts.RESULT_REDIRECT_URL}?lr=true`);
+      response.redirect(`${consts.BASE_URL}/result?lr=true`);
     } catch (e) {
       error("全体エラー", e);
       response.json({result: "エラー"});

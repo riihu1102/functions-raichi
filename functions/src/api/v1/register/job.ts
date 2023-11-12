@@ -1,7 +1,7 @@
-import { Response } from "express";
-import { onRequest, Request } from "firebase-functions/v2/https";
-import { getFirestore } from "firebase-admin/firestore";
-import { error } from "firebase-functions/logger";
+import {Response} from "express";
+import {onRequest, Request} from "firebase-functions/v2/https";
+import {getFirestore} from "firebase-admin/firestore";
+import {error} from "firebase-functions/logger";
 
 export type Job = {
   job: {
@@ -53,7 +53,8 @@ export type Job = {
 const _TEST_DATA_: Job = {
   job: {
     title:
-      "【アダルトVTuber】Youtubeライブ/週4自宅配信🏠アダルト撮影/月1都内🏨 月収32万円~💴 | おしゃべり好き・歌や絵などクリエイター的な趣味のある方大歓迎✨【月払い】",
+      "【アダルトVTuber】Youtubeライブ/週4自宅配信🏠アダルト撮影/月1都内🏨 月収32万円~💴 |" +
+      " おしゃべり好き・歌や絵などクリエイター的な趣味のある方大歓迎✨【月払い】",
     subtitle: `
 主に自宅でのライブ配信・TwitterなどSNS運用がメインのお仕事となりますが、アダルトシーンの撮影で月に1度は都内。
 インフルエンサー業・アダルトVTuberのお仕事にご興味ある方、まずは気軽にお問い合わせください✨`,
@@ -94,7 +95,7 @@ const _TEST_DATA_: Job = {
 };
 
 export const job = onRequest(
-  { region: "asia-northeast1", maxInstances: 10 },
+  {region: "asia-northeast1", maxInstances: 10},
   async (request: Request, response: Response) => {
     // const job = request.body as Job;
     await add();

@@ -5,7 +5,8 @@ import { Job } from "../register/job";
 export const getJobData = async (jobId: string): Promise<Job | undefined> => {
   const doc = await getFirestore().collection("jobs").doc(jobId).get();
   if (!doc.exists) {
-    error("ジョブデータがありません");
+    error("ジョブデータがありません jobid:" + jobId);
+
     return undefined;
   }
   const data = doc.data();

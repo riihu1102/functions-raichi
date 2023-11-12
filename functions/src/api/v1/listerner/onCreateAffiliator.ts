@@ -22,7 +22,9 @@ export const onCreateAffiliator = onDocumentCreated(
       text: "あなた専用のフィリエイトリンクを生成しました",
     };
 
-    const affurl = `${consts.RESULT_REDIRECT_URL}?a=${data.affiliatorId}`;
+    const affurl = data.jobId ?
+      `${consts.BASE_URL}/job/${data.jobId}?a=${data.affiliatorId}` :
+      `${consts.BASE_URL}?a=${data.affiliatorId}`;
     const msg2 = {type: "text", text: affurl};
 
     const msg3 = {

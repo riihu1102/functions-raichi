@@ -20,7 +20,7 @@ export const onCreateInquery = onDocumentCreated(
     const data = snapshot.data() as HistoryData;
     const jobData = await getJobData(data.jobId);
     if (!jobData) {
-      error("ジョブデータが存在しません");
+      error("ジョブデータがありません jobid:" + data.jobId);
       return;
     }
     info(jobData.job.lineFlexMsgCard);

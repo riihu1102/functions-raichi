@@ -1,30 +1,31 @@
 export type RequestQuery = {
-    jobid: string
-    supporterid: string
-    code: string
-    state: string
-  }
+  jobid: string;
+  supporterid: string;
+  code: string;
+  state: string;
+};
 
 export type HistoryData = {
-    lineId: string
-    jobId: string
-    affiliatorId: string
-  }
+  lineId: string;
+  jobId: string;
+  affiliatorId: string;
+};
 
-export type LineIdToken = string
-export type LineId = string
+export type LineIdToken = string;
+export type LineId = string;
 
 export type LineIdTokenRequestBody = {
-    grantType: "authorization_code"
-    code: string
-    redirectUri: string
-    clientId: string
-    clientSecret: string
-    // TODO: PKCE実装
-    codeVerifier?: string
-  }
+  grantType: "authorization_code";
+  code: string;
+  redirectUri: string;
+  clientId: string;
+  clientSecret: string;
+  // TODO: PKCE実装
+  codeVerifier?: string;
+};
 
 export type AffiliatorData = {
-    affiliatorId:string,
-    lineId:string,
-  }
+  affiliatorId: string;
+  lineId: string;
+  jobId?: string;
+};

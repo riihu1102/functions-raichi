@@ -1,6 +1,11 @@
 import { error, info } from "firebase-functions/logger";
 import { onRequest, Request } from "firebase-functions/v2/https";
-import { AFFILIATOR_LINE_CLIENT_ID, AFFILIATOR_LINE_CALLBACK_URI, RESULT_REDIRECT_URL, AFFILIATOR_LINE_CLIENT_SECRET } from "../attribute/consts";
+import {
+  AFFILIATOR_LINE_CLIENT_ID,
+  AFFILIATOR_LINE_CALLBACK_URI,
+  RESULT_REDIRECT_URL,
+  AFFILIATOR_LINE_CLIENT_SECRET,
+} from "../attribute/consts";
 import { LineIdToken, LineId } from "../attribute/types";
 import { addAffiliator } from "./addAffiliator";
 import { getLineId } from "./lineId";
@@ -8,29 +13,28 @@ import { getLineLoginIdToken } from "./lineLoginIdToken";
 import { encryptSha256 } from "./sha256";
 import { validateAffiliatorQuery } from "./validateRequestQuery copy";
 import { verifyCSRFToken } from "./verifyCSRFToken";
-import {Response} from "express"
+import { Response } from "express";
 
 export const registerAffiliator = onRequest(
-  {region: "asia-northeast1", maxInstances: 10},
+  { region: "asia-northeast1", maxInstances: 10 },
   async (request: Request, response: Response) => {
     try {
       // バリデーション
-      const validateResult = validateAffiliatorQuery(
-        request.query
-      );
+      const validateResult = validateAffiliatorQuery(request.query);
       if (!validateResult) {
         error(`ユーザーからの入力値が不正です。\n入力値:\n${request.query}`);
+        console.log(JSON.stringify(request.query, null, 2));
         return;
       }
-      const validatedQuery = validateResult as {state: string, code: string};
+      const validatedQuery = validateResult as { state: string; code: string };
 
       // CSRFトークンの検証
       const isCSRFverify = await verifyCSRFToken(validatedQuery.state);
 
       // ///////ローカル検証時コメントアウト
       if (!isCSRFverify) {
-        // error(`CSRF検証エラーです。state:\n${validatedQuery.state}`);
-        // return;
+        error(`CSRF検証エラーです。state:\n${validatedQuery.state}`);
+        return;
       }
 
       const lineIdTokenResult: LineIdToken | undefined =
@@ -64,16 +68,14 @@ export const registerAffiliator = onRequest(
       // TODO: 余裕があれば
       // アフィリエイターデータ保存(ユーザー認証情報はクライアントで保持しない)
       // アフィリエイトコードはlineidのsha256ハッシュ。漏洩モーマンタイ。
-      addAffiliator(lineId, encryptSha256(lineId));
+      await addAffiliator(lineId, encryptSha256(lineId));
 
-      info(
-        `アフィリエイター登録の受付を完了しました。${lineId}`
-      );
+      info(`アフィリエイター登録の受付を完了しました。${lineId}`);
 
       response.redirect(`${RESULT_REDIRECT_URL}?ar=true`); // job result
     } catch (e) {
       error("全体エラー", e);
-      response.json({result: "エラー"});
+      response.json({ result: "エラー" });
     }
   }
 );

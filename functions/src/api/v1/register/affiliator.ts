@@ -20,24 +20,32 @@ export const affiliator = onRequest(
         error(`ユーザーからの入力値が不正です。\n入力値:\n${request.query}`);
         return;
       }
-      const validatedQuery = validateResult as { state: string; code: string };
+      const validatedQuery = validateResult as {
+        state: string;
+        code: string;
+        jobid?: string;
+      };
 
       // CSRFトークンの検証
       const isCSRFverify = await verifyCSRFToken(validatedQuery.state);
 
       // ///////ローカル検証時コメントアウト
       if (!isCSRFverify) {
-        // error(`CSRF検証エラーです。state:\n${validatedQuery.state}`);
-        // return;
+        error(`CSRF検証エラーです。state:\n${validatedQuery.state}`);
+        return;
       }
 
+      const redirectUri = `${consts.AFFILIATOR_LINE_CALLBACK_URI}${
+        validatedQuery.jobid ? `?jobid=${validatedQuery.jobid}` : ""
+      }`;
+      info("@@" + redirectUri);
       const lineIdTokenResult: LineIdToken | undefined =
         await getLineLoginIdToken({
           grantType: "authorization_code",
           code: validatedQuery.code,
           clientId: consts.AFFILIATOR_LINE_CLIENT_ID,
           clientSecret: consts.AFFILIATOR_LINE_CLIENT_SECRET,
-          redirectUri: consts.AFFILIATOR_LINE_CALLBACK_URI,
+          redirectUri,
         });
       if (!lineIdTokenResult) {
         error(
@@ -62,11 +70,17 @@ export const affiliator = onRequest(
       // TODO: 余裕があれば
       // アフィリエイターデータ保存(ユーザー認証情報はクライアントで保持しない)
       // アフィリエイトコードはlineidのsha256ハッシュ。漏洩モーマンタイ。
-      await addAffiliator(lineId, encryptSha256(lineId));
+      const jobId = validatedQuery.jobid ?? "";
+      const affiliatorId = encryptSha256(lineId);
+      await addAffiliator(lineId, affiliatorId, jobId);
 
       info(`アフィリエイター登録の受付を完了しました。${lineId}`);
 
-      response.redirect(`${consts.RESULT_REDIRECT_URL}?ar=true`); // job result
+      const affurl = jobId ?
+        `${consts.BASE_URL}/job/${jobId}?a=${affiliatorId}` :
+        `${consts.BASE_URL}?a=${affiliatorId}`;
+
+      response.redirect(`${affurl}&ar=true`); // job result
     } catch (e) {
       error("全体エラー", e);
       response.json({result: "エラー"});
