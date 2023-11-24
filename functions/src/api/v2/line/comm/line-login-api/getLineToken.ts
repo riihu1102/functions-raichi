@@ -1,17 +1,20 @@
 // LINEログイン用のIDトークンを取得
-
 import axios from "axios";
-import { error } from "firebase-functions/logger";
-import { LineIdTokenRequestBody, LineIdToken } from "../attribute/types";
-
+import {error, info} from "firebase-functions/logger";
+import {LineIdTokenRequestBody} from "../../../../v1/attribute/types";
+import {ResponseLineToken} from "../../types";
 // 参考: https://developers.line.biz/ja/docs/line-login/integrate-pkce/#issue-access-token
-export const getLineLoginIdToken = async ({
+export const getLineToken = async ({
   grantType,
   code,
   redirectUri,
   clientId,
   clientSecret,
-}: LineIdTokenRequestBody): Promise<LineIdToken | undefined> => {
+}: LineIdTokenRequestBody): Promise<ResponseLineToken> => {
+  info(`[開始] LINE TOKEN取得処理 code: ${code} grant_type: ${grantType} 
+    client_id: ${clientId} client_secret: 
+    ${clientSecret} redirect_uri: ${redirectUri}`);
+
   const url = "https://api.line.me/oauth2/v2.1/token";
 
   const params = new URLSearchParams();
@@ -30,9 +33,12 @@ export const getLineLoginIdToken = async ({
         "Access-Control-Allow-Methods": "*",
       },
     });
-    return response.data.id_token as LineIdToken;
+    info(JSON.stringify(response.data+ "@@@@@@@@@@ppppp`````@@@@@@"));
+    return response.data as ResponseLineToken;
   } catch (e) {
-    error("axiosエラー", e);
-    throw new Error("error");
+    error("LINE TOKEN取得に失敗しました。", e);
+    throw new Error("LINE TOKEN取得に失敗しました。");
+  } finally {
+    info("[終了] LINE TOKEN取得処理");
   }
 };

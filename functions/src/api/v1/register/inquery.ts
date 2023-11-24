@@ -37,10 +37,10 @@ export const inquery = onRequest(
       // LINE IDトークン取得
       const redirectUri =
         consts.JOB_SEEKER_LINE_CALLBACK_URI +
-        "?jobid=" +
-        validatedQuery.jobid +
-        "&supporterid=" +
-        validatedQuery.supporterid;
+        "?jobId=" +
+        validatedQuery.jobId +
+        "&supporterId=" +
+        validatedQuery.supporterId;
 
       const lineIdTokenResult: LineIdToken | undefined =
         await getLineLoginIdToken({
@@ -74,13 +74,13 @@ export const inquery = onRequest(
       // TODO: 余裕があれば
       await addJobSubbmitHistory(
         lineId,
-        validatedQuery.jobid,
-        validatedQuery.supporterid
+        validatedQuery.jobId as string,
+        validatedQuery.supporterId as string
       );
 
       info(
         `LINE応募の受付を完了しました。${lineId}, 
-        ${validatedQuery.jobid} , ${validatedQuery.supporterid}`
+        ${validatedQuery.jobId} , ${validatedQuery.supporterId}`
       );
       response.redirect(`${consts.BASE_URL}/result?lr=true`);
     } catch (e) {

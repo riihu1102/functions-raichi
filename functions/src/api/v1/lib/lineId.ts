@@ -1,5 +1,5 @@
 import axios from "axios";
-import {error} from "firebase-functions/logger";
+import { error } from "firebase-functions/logger";
 import { LineIdToken, LineId } from "../attribute/types";
 
 export const getLineId = async (

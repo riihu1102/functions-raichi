@@ -1,6 +1,6 @@
 export type RequestQuery = {
-  jobid: string;
-  supporterid: string;
+  jobId?: string;
+  supporterId?: string;
   code: string;
   state: string;
 };

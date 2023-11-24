@@ -7,8 +7,8 @@ import {getLineLoginIdToken} from "../lib/lineLoginIdToken";
 import {encryptSha256} from "../lib/sha256";
 import {validateAffiliatorQuery} from "../lib/validateRequestQuery copy";
 import {verifyCSRFToken} from "../lib/verifyCSRFToken";
-import * as consts from "../attribute/consts";
 import {LineIdToken, LineId} from "../attribute/types";
+import * as consts from "../attribute/consts";
 
 export const affiliator = onRequest(
   {region: "asia-northeast1", maxInstances: 10},
@@ -56,7 +56,7 @@ export const affiliator = onRequest(
       }
       const lineIdToken = lineIdTokenResult as LineIdToken;
 
-      // LINE LINE ID取得
+      // LINE ID取得
       const lineIdResult: LineId | undefined = await getLineId(
         lineIdToken,
         consts.AFFILIATOR_LINE_CLIENT_ID
