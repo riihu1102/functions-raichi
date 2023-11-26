@@ -17,3 +17,5 @@ export const JOB_SEEKER_LINE_CALLBACK_URI: string = process.env
   .JOB_SEEKER_LINE_CALLBACK_URI as string;
 export const JOB_SEEKER_LINE_ACCESS_TOKEN: string = process.env
   .JOB_SEEKER_LINE_ACCESS_TOKEN as string;
+
+export const BASE_URL = "https://raichi-qzin-a.vercel.app";

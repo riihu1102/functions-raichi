@@ -1,5 +1,5 @@
-import {getFirestore} from "firebase-admin/firestore";
-import {error} from "firebase-functions/logger";
+import { getFirestore } from "firebase-admin/firestore";
+import { error } from "firebase-functions/logger";
 
 // TODO: 構造体で型チェックしたいけどこれ以前変えるのめんどいからとりあえずこのまま。
 export const addJobSubbmitHistory = async (

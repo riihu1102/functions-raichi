@@ -1,7 +1,7 @@
-import { affiliator } from "./affiliator";
-import { inquery } from "./inquery";
-import { job } from "./job";
-import { profile } from "./profile";
+import {affiliator} from "./affiliator";
+import {inquery} from "./inquery";
+import {job} from "./job";
+import {profile} from "./profile";
 
 export {
   /* 問い合わせデータ */
