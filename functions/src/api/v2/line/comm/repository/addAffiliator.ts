@@ -19,7 +19,7 @@ export const addAffiliaotrs = async ({
       lineProfile: {...profile},
       createdAt: FieldValue.serverTimestamp(), // TODO: TZ設定
     });
-    info("終わったよー保" + JSON.stringify(profile) +"||"+ jobId +"||");
+    info("db登録終了" + JSON.stringify(profile) +"|"+ jobId +"|");
   } catch (e) {
     error("job submit data error.", e);
     throw new Error("db問い合わせ情報の追加エラー");
