@@ -5,7 +5,6 @@ import {suffixWith} from "../comm/tmpl";
 import {generateRedirectUrl} from "../comm/generateRedirectUrl ";
 import {LineProfile} from "../comm/line-login-api/verifyLineToken";
 import {getLineProfile} from "../comm/line-login-api/getLineProfile";
-import * as c from "../consts";
 import {addAffiliaotrs} from "../comm/repository/addAffiliator";
 
 /**
@@ -39,8 +38,8 @@ export class AffiliatorStrategy implements Strategy {
     name: "",
     picture: "",
   };
-  private clientId = c.STAGING_LINE_CLIENT_ID2;
-  private clientSecret = c.STAGING_LINE_CLIENT_SECRET2;
+  private clientId = process.env.AFFILIATOR_LINE_LOGIN_CLIENT_ID ?? "";
+  private clientSecret = process.env.AFFILIATOR_LINE_LOGIN_CLIENT_SECRET ?? "";
 
   /**
    * クエリパラメータを検証し、必要な情報をクラスプロパティに格納します。
@@ -109,11 +108,10 @@ export class AffiliatorStrategy implements Strategy {
     }
 
     const redirectUri = generateRedirectUrl({
-      base: c.LINE_WEBHOOK_REDIRECT_URL,
+      base: process.env.LINE_LOGIN_WEBHOOK_URL!,
       params,
     });
     info("リダイレクトURL: " + redirectUri);
-
     info(`LINE LOGIN API呼び出し clientId: ${this.clientId} 
     clientSecret: ${this.clientSecret} 
     code: ${this.code} redirectUrl: ${redirectUri}`);
