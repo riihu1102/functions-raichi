@@ -1,7 +1,6 @@
 import {error, info} from "firebase-functions/logger";
 import {Strategy} from "./base/Strategy";
 import {verifyCSRFToken} from "../comm/verifyCSRFToken";
-import * as c from "../consts";
 import {suffixWith} from "../comm/tmpl";
 import {generateRedirectUrl} from "../comm/generateRedirectUrl ";
 import {LineProfile} from "../comm/line-login-api/verifyLineToken";
@@ -16,7 +15,7 @@ type QueryParams = {
   code: string;
   state: string;
   jobId: string;
-  affiliatorId: string;
+  affiliatorId?: string;
 };
 
 /**
@@ -40,8 +39,8 @@ export class ActressStrategy implements Strategy {
     name: "",
     picture: "",
   };
-  private clientId = c.STAGING_LINE_CLIENT_ID1;
-  private clientSecret = c.STAGING_LINE_CLIENT_SECRET1;
+  private clientId = process.env.JOBSEEKER_LINE_LOGIN_CLIENT_ID ?? "";
+  private clientSecret = process.env.JOBSEEKER_LINE_LOGIN_CLIENT_SECRET ?? "";
 
   /**
    * クエリパラメータを検証し、必要な情報をクラスプロパティに格納します。
@@ -56,17 +55,23 @@ export class ActressStrategy implements Strategy {
 
     info(msg("[バリデーション開始]"));
 
-    const isVerify = type && code && state && jobId && affiliatorId;
+    const isVerify = type && code && state && jobId;
     if (!isVerify) {
-      error(msg("バリデーション開始"));
-      throw new Error(msg("バリデーションエラー"));
+      info("type:" + type);
+      info("code:" + code);
+      info("jobId:" + jobId);
+      info("state:" + state);
+      info("affiliatorId:" + affiliatorId);
+      error(msg("バリデーションエラー"), new Error(msg("バリデーションエラー")));
     }
 
     this.type = type;
     this.code = code;
     this.state = state;
     this.jobId = jobId;
-    this.affiliatorId = affiliatorId;
+    if (affiliatorId) {
+      this.affiliatorId = affiliatorId;
+    }
 
     info(msg("[バリデーション 正常終了]"));
     return;
@@ -101,7 +106,7 @@ export class ActressStrategy implements Strategy {
   async lineProfile(): Promise<void> {
     info("[LINE PROFILE取得処理開始]");
     const redirectUri = generateRedirectUrl({
-      base: c.LINE_WEBHOOK_REDIRECT_URL,
+      base: process.env.LINE_LOGIN_WEBHOOK_URL!,
       params: {
         jobId: this.jobId,
         affiliatorId: this.affiliatorId,
