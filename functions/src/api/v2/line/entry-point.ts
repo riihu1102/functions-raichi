@@ -12,9 +12,11 @@ export const webhook = onRequest(
       await user.start();
       await user.register();
       user.end();
-      response.redirect("http://localhost:3000");
+      // response.redirect(`${process.env.BASE_URL}?line_notice_result=true`);
+      response.redirect(`${process.env.BASE_URL}?line_notice_result=true`);
     } catch (e: unknown) {
-      error("エラー" + e);
+      response.redirect(`${process.env.BASE_URL}?line_notice_result=false`);
+      error("ライチ求人APIエラー", e);
     }
   }
 );

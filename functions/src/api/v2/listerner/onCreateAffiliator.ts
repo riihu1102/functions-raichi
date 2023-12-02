@@ -3,7 +3,7 @@ import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {info} from "firebase-functions/logger";
 import {linePushMsg} from "../../v1/lib/linePushMsg";
 
-type AffiliatorData = {
+export type AffiliatorData = {
   affiliatorId: string;
   lineId: string;
   jobId?: string;
